@@ -7,6 +7,8 @@
     <title>Agregar Alumnos</title>
 </head>
 <body>
+    <h1>Agregar Alumnos</h1>
+    <br>
     <form action="/alumnos" method="POST">
         @csrf
         <label for="nombre">Nombre</label>

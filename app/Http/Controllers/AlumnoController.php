@@ -34,7 +34,7 @@ class AlumnoController extends Controller
         $request->validate([
             'nombre' => 'required|min:3|max:255',
             'correo' => ['required', 'email', 'max:255'],
-            'FNacimiento' => ['required', 'min:8'],
+            'FNacimiento' => ['required', 'min:10', 'max:10'],
             'Ciudad' => ['required', 'min:5']
         ]);
     
@@ -73,7 +73,7 @@ class AlumnoController extends Controller
         $request->validate([
             'nombre' => 'required|min:3|max:255',
             'correo' => ['required', 'email', 'max:255'],
-            'FNacimiento' => ['required', 'min:8'],
+            'FNacimiento' => ['required', 'min:10', 'max:10'],
             'Ciudad' => ['required', 'min:5']
         ]);
 
@@ -90,8 +90,9 @@ class AlumnoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Alumno $mensaje)
+    public function destroy(Alumno $alumno)
     {
-        //
+        $alumno->delete();
+        return redirect()->route('alumnos.index');
     }
 }
