@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Alumno;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Routing\Route;
 use Tests\TestCase;
 
 class AlumnosControllerTest extends TestCase
@@ -34,47 +36,71 @@ class AlumnosControllerTest extends TestCase
     /** @test */
     public function crear_alumno(): void
     {
-        $response = $this->post('/alumnos',[ 'nombre' =>'Luis',
-                                             'correo' => 'correotest@gmail.com',
-                                             'FNacimiento' => '10/02/2003',
-                                             'Ciudad' => 'Chihuahua']
-    
-        );
+
+        $alumno = Alumno::factory()->make();
+
+        $response = $this->post('/alumnos', $alumno->toArray());
+        //$response = $this->post('/alumnos',[ 'nombre' =>'Luis',
+        //                                     'correo' => 'correotest@gmail.com',
+        //                                     'FNacimiento' => '10/02/2003',
+        //                                     'Ciudad' => 'Chihuahua']);
 
         
         
          $response->assertStatus(302);
         // $response->assertRedirect('alumnos/create');
 
-        $response = $this->assertDatabaseHas('alumn',[ 'nombre' =>'Luis',
-        'correo' => 'correotest@gmail.com',
-        'FNacimiento' => '10/02/2003',
-        'Ciudad' => 'Chihuahua']
+        $response = $this->assertDatabaseHas('alumn',$alumno->toArray()
 );
     
+    }
+
+
+
+    /** @test */
+    public function muestra_formulario_editar_alumno(): void
+    {
+        $alumno = Alumno::factory()->create();
+
+
+        $response= $this->get(Route('alumnos.edit', $alumno->id));
+
+        $response   ->assertSee('Editar Alumno')
+                    ->assertSeeHtml($alumno->nombre)
+                    ->assertSeeHtml($alumno->correo)
+                    ->assertSeeHtml($alumno->Ciudad)
+                    ->assertStatus(200);
+        
     }
 
     /** @test */
     public function ver_alumno(): void
     {
+        $alumno = Alumno::factory()->create();
 
 
+        $response= $this->get(Route('alumnos.show', $alumno->id));
 
+        $response   ->assertSee('Alumno #')
+                    ->assertSeeHtml($alumno->nombre)
+                    ->assertSeeHtml($alumno->correo)
+                    ->assertSeeHtml($alumno->Ciudad)
+                    ->assertStatus(200);
 
         
     }
 
     /** @test */
-    public function eliminar_alumno(): void
+    public function elimina_alumno_correctamente(): void
     {
-        $response = $this->post('alumnos.destroy',[ 'nombre' =>'Luis',
-                                             'correo' => 'correotest@gmail.com',
-                                             'FNacimiento' => '10/02/2003',
-                                             'Ciudad' => 'Chihuahua']
-    
-        );
+        
+        $alumno = Alumno::factory()->create();
 
-        //$response->assertStatus(404);
-    
+        
+        $response = $this->delete(Route('alumnos.destroy', $alumno->id));
+        $response->assertStatus(302);
+
+        
+        $this->assertDatabaseMissing('alumn', ['id' => $alumno->id]);
     }
 }

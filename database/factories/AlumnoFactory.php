@@ -20,7 +20,7 @@ class AlumnoFactory extends Factory
             
             'nombre' => fake()->name(),
             'correo' => fake()->unique()->safeEmail(),
-            'FNacimiento' => '12/10/20',
+            'FNacimiento' => '12/10/2001',
             'Ciudad' => fake()->city(),
         ];
     }
